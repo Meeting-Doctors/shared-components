@@ -1,5 +1,5 @@
 {
-    "name": "gilsegura/shared",
+    "name": "meetingdoctors/shared",
     "description": "This is a project providing infrastructure and testing helpers for creating CQRS and event sourced applications.",
     "type": "library",
     "license": "MIT",
