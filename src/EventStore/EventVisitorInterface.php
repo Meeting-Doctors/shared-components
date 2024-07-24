@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Shared\EventStore;
 
-use Shared\Domain\DomainMessage;
+use Shared\Domain\DomainEvent;
 
 interface EventVisitorInterface
 {
-    public function doWithEvent(DomainMessage $message): void;
+    public function doWithEvent(DomainEvent $event): void;
 }

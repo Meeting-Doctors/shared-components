@@ -6,6 +6,6 @@ namespace Shared\Domain;
 
 use Shared\Serializer\SerializableInterface;
 
-interface DomainEventInterface extends SerializableInterface
+interface PayloadInterface extends SerializableInterface
 {
 }

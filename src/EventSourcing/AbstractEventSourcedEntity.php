@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Shared\EventSourcing;
 
-use Shared\Domain\DomainEventInterface;
+use Shared\Domain\DomainEvent;
 
 abstract class AbstractEventSourcedEntity implements EventSourcedEntityInterface
 {
@@ -13,16 +13,16 @@ abstract class AbstractEventSourcedEntity implements EventSourcedEntityInterface
     /**
      * @throws AggregateRootAlreadyExistsException
      */
-    final protected function apply(DomainEventInterface $event): void
+    final protected function apply(DomainEvent $event): void
     {
-        $this->aggregateRoot->apply($event);
+        //$this->aggregateRoot->apply($event);
     }
 
     /**
      * @throws AggregateRootAlreadyExistsException
      */
     #[\Override]
-    final public function handleRecursively(DomainEventInterface $event): void
+    final public function handleRecursively(DomainEvent $event): void
     {
         $this->handle($event);
 
@@ -56,7 +56,7 @@ abstract class AbstractEventSourcedEntity implements EventSourcedEntityInterface
         return [];
     }
 
-    private function handle(DomainEventInterface $event): void
+    private function handle(DomainEvent $event): void
     {
         $method = $this->applyMethod($event);
 
@@ -67,7 +67,7 @@ abstract class AbstractEventSourcedEntity implements EventSourcedEntityInterface
         $this->$method($event);
     }
 
-    private function applyMethod(DomainEventInterface $event): string
+    private function applyMethod(DomainEvent $event): string
     {
         $fqcn = explode('\\', $event::class);
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Shared\EventSourcing\MetadataEnricher;
 
 use Shared\Domain\DomainEventStream;
-use Shared\Domain\DomainMessage;
+use Shared\Domain\DomainEvent;
 use Shared\Domain\Metadata;
 use Shared\EventSourcing\EventStreamDecoratorInterface;
 
@@ -29,18 +29,18 @@ final readonly class MetadataEnrichingEventStreamDecorator implements EventStrea
     }
 
     /**
-     * @return \Generator<DomainMessage>
+     * @return \Generator<DomainEvent>
      */
     private function enrich(DomainEventStream $stream): \Generator
     {
-        foreach ($stream->messages as $message) {
+        foreach ($stream->events as $event) {
             $metadata = Metadata::empty();
 
             foreach ($this->enrichers as $enricher) {
                 $metadata = $enricher->enrich($metadata);
             }
 
-            yield $message->addMetadata($metadata);
+            yield $event->withMetadata($metadata);
         }
     }
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Shared\EventHandling;
 
-use Shared\Domain\DomainMessage;
+use Shared\Domain\DomainEvent;
 
 interface EventListenerInterface
 {
     /**
      * @throws \Throwable
      */
-    public function handle(DomainMessage $message): void;
+    public function handle(DomainEvent $event): void;
 }

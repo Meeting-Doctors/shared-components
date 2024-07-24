@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Shared\ReadModel;
 
-use Shared\Domain\DomainEventInterface;
-use Shared\Domain\DomainMessage;
+use Shared\Domain\DomainEvent;
 use Shared\EventHandling\EventListenerInterface;
 
 abstract readonly class AbstractProjector implements EventListenerInterface
 {
     #[\Override]
-    final public function handle(DomainMessage $message): void
+    final public function handle(DomainEvent $event): void
     {
-        $event = $message->payload;
         $method = $this->applyMethod($event);
 
         if (!method_exists($this, $method)) {
@@ -23,7 +21,7 @@ abstract readonly class AbstractProjector implements EventListenerInterface
         $this->$method($event);
     }
 
-    private function applyMethod(DomainEventInterface $event): string
+    private function applyMethod(DomainEvent $event): string
     {
         $fqcn = explode('\\', $event::class);
 

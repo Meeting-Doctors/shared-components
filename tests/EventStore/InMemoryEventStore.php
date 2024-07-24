@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Shared\Tests\EventStore;
 
 use Shared\Criteria;
+use Shared\Domain\DomainEvent;
 use Shared\Domain\DomainEventStream;
-use Shared\Domain\DomainMessage;
 use Shared\Domain\Uuid;
 use Shared\EventStore\DomainEventStreamNotFoundException;
 use Shared\EventStore\EventStoreInterface;
@@ -30,8 +30,8 @@ final class InMemoryEventStore implements EventStoreInterface, EventStoreManager
     #[\Override]
     public function append(DomainEventStream $stream): void
     {
-        foreach ($stream->messages as $message) {
-            $this->data[$message->id->uuid][$message->playhead] = $message;
+        foreach ($stream->events as $event) {
+            $this->data[$event->aggregateId()->uuid][$event->playHead()->value] = $event;
         }
     }
 
@@ -44,7 +44,7 @@ final class InMemoryEventStore implements EventStoreInterface, EventStoreManager
         $expr = $andX->expressions[0];
         /** @var Uuid $id */
         $id = $expr->value;
-        /** @var DomainMessage[] $stream */
+        /** @var DomainEvent[] $stream */
         $stream = $this->data[$id->uuid];
 
         foreach ($stream as $message) {

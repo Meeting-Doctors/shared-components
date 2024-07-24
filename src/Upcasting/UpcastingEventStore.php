@@ -15,7 +15,7 @@ final readonly class UpcastingEventStore implements EventStoreInterface, EventSt
 {
     public function __construct(
         private EventStoreInterface&EventStoreManagerInterface $eventStore,
-        private SequentialUpcasterChain $upcaster
+        private UpcasterInterface $upcaster
     ) {
     }
 
@@ -30,8 +30,10 @@ final readonly class UpcastingEventStore implements EventStoreInterface, EventSt
 
     private function upcast(DomainEventStream $stream): \Generator
     {
-        foreach ($stream->messages as $message) {
-            yield $this->upcaster->upcast($message);
+        foreach ($stream->events as $event) {
+            if ($this->upcaster->supports($event)) {
+                yield $this->upcaster->upcast($event);
+            }
         }
     }
 
