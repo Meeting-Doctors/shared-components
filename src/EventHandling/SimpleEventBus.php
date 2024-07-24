@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Shared\EventHandling;
 
+use Shared\Domain\DomainEvent;
 use Shared\Domain\DomainEventStream;
-use Shared\Domain\DomainMessage;
 
 final class SimpleEventBus implements EventBusInterface
 {
     /** @var EventListenerInterface[] */
     private array $eventListeners = [];
 
-    /** @var DomainMessage[] */
+    /** @var DomainEvent[] */
     private array $queue = [];
 
     private bool $isPublishing = false;
@@ -26,16 +26,16 @@ final class SimpleEventBus implements EventBusInterface
     #[\Override]
     public function publish(DomainEventStream $stream): void
     {
-        foreach ($stream->messages as $message) {
-            $this->queue[] = $message;
+        foreach ($stream->events as $event) {
+            $this->queue[] = $event;
         }
 
         if (!$this->isPublishing) {
             $this->isPublishing = true;
 
             try {
-                while ($message = array_shift($this->queue)) {
-                    $this->handle($message);
+                while ($event = array_shift($this->queue)) {
+                    $this->handle($event);
                 }
             } finally {
                 $this->isPublishing = false;
@@ -43,11 +43,11 @@ final class SimpleEventBus implements EventBusInterface
         }
     }
 
-    private function handle(DomainMessage $message): void
+    private function handle(DomainEvent $event): void
     {
         foreach ($this->eventListeners as $eventListener) {
             try {
-                $eventListener->handle($message);
+                $eventListener->handle($event);
             } catch (\Throwable $e) {
                 throw EventBusException::new($e);
             }

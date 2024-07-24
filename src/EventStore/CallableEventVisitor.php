@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Shared\EventStore;
 
-use Shared\Domain\DomainMessage;
+use Shared\Domain\DomainEvent;
 
 final readonly class CallableEventVisitor implements EventVisitorInterface
 {
@@ -14,8 +14,8 @@ final readonly class CallableEventVisitor implements EventVisitorInterface
     }
 
     #[\Override]
-    public function doWithEvent(DomainMessage $message): void
+    public function doWithEvent(DomainEvent $event): void
     {
-        call_user_func($this->callable, $message);
+        call_user_func($this->callable, $event);
     }
 }

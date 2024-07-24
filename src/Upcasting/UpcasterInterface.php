@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Shared\Upcasting;
 
-use Shared\Domain\DomainMessage;
+use Shared\Domain\DomainEvent;
 
 interface UpcasterInterface
 {
-    public function supports(DomainMessage $message): bool;
+    public function supports(DomainEvent $event): bool;
 
-    public function upcast(DomainMessage $message): DomainMessage;
+    public function upcast(DomainEvent $event): DomainEvent;
 }

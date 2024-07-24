@@ -5,92 +5,47 @@ declare(strict_types=1);
 namespace Shared\Tests\ReadModel;
 
 use PHPUnit\Framework\TestCase;
-use Shared\Domain\DomainEventInterface;
-use Shared\Domain\DomainMessage;
-use Shared\Domain\Metadata;
+use Shared\Domain\PayloadInterface;
 use Shared\Domain\Uuid;
-use Shared\ReadModel\AbstractProjector;
 use Shared\Tests\InMemoryCollector;
+use Shared\Tests\Stub\Domain\Event\AggregateRootStubWasCreated;
+use Shared\Tests\Stub\Domain\Event\DomainEventStub;
+use Shared\Tests\Stub\Domain\Event\Payload\AggregateRootStubWasCreatedPayload;
+use Shared\Tests\Stub\Domain\Event\Payload\DomainEventStubPayload;
+use Shared\Tests\Stub\Domain\ReadModel\Factory\AggregateRootStubProjectionFactory;
 
 final class ReadModelProjectionFactoryTest extends TestCase
 {
     public function test_must_apply_specific_event_when_method_exists(): void
     {
         $collector = new InMemoryCollector();
-        $projector = new AggregateRootProjectionFactory($collector);
+        $projector = new AggregateRootStubProjectionFactory($collector);
 
-        $projector->handle(DomainMessage::record(
+        $projector->handle(DomainEventStub::occur(
             new Uuid('9db0db88-3e44-4d2b-b46f-9ca547de06ac'),
-            0,
-            Metadata::empty(),
-            new EventWasOccurred()
+            new DomainEventStubPayload()
         ));
 
-        /** @var DomainEventInterface[] $events */
+        /** @var PayloadInterface[] $events */
         $events = $collector->objects();
         $event = $events[0];
 
-        self::assertInstanceOf(EventWasOccurred::class, $event);
+        self::assertInstanceOf(DomainEventStub::class, $event);
     }
 
     public function test_must_apply_specific_event_when_method_not_exists(): void
     {
         $collector = new InMemoryCollector();
-        $projector = new AggregateRootProjectionFactory($collector);
+        $projector = new AggregateRootStubProjectionFactory($collector);
 
-        $projector->handle(DomainMessage::record(
+        $projector->handle(AggregateRootStubWasCreated::occur(
             new Uuid('9db0db88-3e44-4d2b-b46f-9ca547de06ac'),
-            0,
-            Metadata::empty(),
-            new AnotherEventWasOccurred()
+            new AggregateRootStubWasCreatedPayload(1)
         ));
 
-        /** @var DomainEventInterface[] $events */
+        /** @var PayloadInterface[] $events */
         $events = $collector->objects();
 
         self::assertEmpty($events);
-    }
-}
-
-final readonly class AggregateRootProjectionFactory extends AbstractProjector
-{
-    public function __construct(
-        private InMemoryCollector $collector
-    ) {
-    }
-
-    protected function applyEventWasOccurred(EventWasOccurred $event): void
-    {
-        $this->collector->collect($event);
-    }
-}
-
-final readonly class EventWasOccurred implements DomainEventInterface
-{
-    #[\Override]
-    public static function deserialize(array $data): self
-    {
-        return new self();
-    }
-
-    #[\Override]
-    public function serialize(): array
-    {
-        return [];
-    }
-}
-
-final readonly class AnotherEventWasOccurred implements DomainEventInterface
-{
-    #[\Override]
-    public static function deserialize(array $data): self
-    {
-        return new self();
-    }
-
-    #[\Override]
-    public function serialize(): array
-    {
-        return [];
     }
 }

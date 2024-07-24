@@ -5,57 +5,30 @@ declare(strict_types=1);
 namespace Shared\Tests\EventSourcing\MetadataEnricher;
 
 use PHPUnit\Framework\TestCase;
-use Shared\Domain\DomainEventInterface;
 use Shared\Domain\DomainEventStream;
-use Shared\Domain\DomainMessage;
-use Shared\Domain\Metadata;
 use Shared\Domain\Uuid;
-use Shared\EventSourcing\MetadataEnricher\MetadataEnricherInterface;
 use Shared\EventSourcing\MetadataEnricher\MetadataEnrichingEventStreamDecorator;
+use Shared\Tests\Stub\Domain\Event\DomainEventStub;
+use Shared\Tests\Stub\Domain\Event\MetadataEnricher\MetadataEnricherStub;
+use Shared\Tests\Stub\Domain\Event\Payload\DomainEventStubPayload;
 
 final class MetadataEnrichingEventStreamDecoratorTest extends TestCase
 {
     public function test_must_enrich_metadata(): void
     {
         $decorator = new MetadataEnrichingEventStreamDecorator(
-            new MetadataEnricher()
+            new MetadataEnricherStub()
         );
 
-        $stream = $decorator->decorate(new DomainEventStream(DomainMessage::record(
+        $stream = $decorator->decorate(new DomainEventStream(DomainEventStub::occur(
             new Uuid('9db0db88-3e44-4d2b-b46f-9ca547de06ac'),
-            0,
-            Metadata::empty(),
-            new AnotherEventWasOccurred()
+            new DomainEventStubPayload()
         )));
 
-        $messages = $stream->messages;
-        $message = $messages[0];
-        $metadata = $message->metadata;
+        $events = $stream->events;
+        $event = $events[0];
+        $metadata = $event->metadata();
 
         self::assertSame(['foo' => 'bar'], $metadata->values);
-    }
-}
-
-final readonly class MetadataEnricher implements MetadataEnricherInterface
-{
-    #[\Override]
-    public function enrich(Metadata $metadata): Metadata
-    {
-        return $metadata->merge(Metadata::kv('foo', 'bar'));
-    }
-}
-
-final readonly class AnotherEventWasOccurred implements DomainEventInterface
-{
-    #[\Override]
-    public static function deserialize(array $data): self
-    {
-        return new self();
-    }
-
-    #[\Override]
-    public function serialize(): array
-    {
-        return [];
     }
 }

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Shared\EventSourcing;
 
-use Shared\Domain\DomainEventInterface;
+use Shared\Domain\DomainEvent;
 
 interface EventSourcedEntityInterface
 {
-    public function handleRecursively(DomainEventInterface $event): void;
+    public function handleRecursively(DomainEvent $event): void;
 
     /**
      * @throws AggregateRootAlreadyExistsException

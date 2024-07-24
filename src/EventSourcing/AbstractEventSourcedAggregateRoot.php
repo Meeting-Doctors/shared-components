@@ -4,35 +4,37 @@ declare(strict_types=1);
 
 namespace Shared\EventSourcing;
 
-use Shared\Domain\DomainEventInterface;
+use Override;
+use RuntimeException;
+use Shared\Domain\DomainEvent;
 use Shared\Domain\DomainEventStream;
-use Shared\Domain\DomainMessage;
-use Shared\Domain\Metadata;
+use Shared\Domain\PlayHead;
 
 abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterface
 {
-    /** @var DomainMessage[] */
-    private array $uncommittedEvents = [];
+    /** @var DomainEvent[] */
+    private array $uncommittedEvents;
+    private PlayHead $playHead;
 
-    private int $playhead = -1;
+    public function __construct()
+    {
+        $this->uncommittedEvents = [];
+        $this->playHead = PlayHead::zero();
+    }
 
-    /**
-     * @throws AggregateRootAlreadyExistsException
-     */
     final public function initialize(DomainEventStream $stream): void
     {
-        foreach ($stream->messages as $message) {
-            ++$this->playhead;
-            $this->handleRecursively($message->payload);
+        foreach ($stream->events as $event) {
+            $this->apply($event);
         }
     }
 
-    final public function playhead(): int
+    final public function playHead(): PlayHead
     {
-        return $this->playhead;
+        return $this->playHead;
     }
 
-    #[\Override]
+    #[Override]
     final public function uncommittedEvents(): DomainEventStream
     {
         $stream = new DomainEventStream(...$this->uncommittedEvents);
@@ -42,45 +44,27 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
         return $stream;
     }
 
-    /**
-     * @throws AggregateRootAlreadyExistsException
-     */
-    final public function apply(DomainEventInterface $event): void
+    protected function recordThat(DomainEvent $event): void
     {
-        $this->handleRecursively($event);
+        $event = $event->withPlayHead($this->playHead->next());
 
-        ++$this->playhead;
+        $this->apply($event);
 
-        $this->uncommittedEvents[] = DomainMessage::record(
-            $this->id(),
-            $this->playhead,
-            Metadata::empty(),
-            $event
-        );
+        $this->uncommittedEvents[] = $event;
     }
 
-    /**
-     * @throws AggregateRootAlreadyExistsException
-     */
-    final protected function handleRecursively(DomainEventInterface $event): void
+    private function apply(DomainEvent $event): void
     {
-        $this->handle($event);
+        $nextPlayHead = $event->playHead();
 
-        foreach ($this->childEntities() as $entity) {
-            $entity->setAggregateRoot($this);
-            $entity->handleRecursively($event);
-        }
+        $this->assertInvalidNextPlayHead($nextPlayHead);
+
+        $this->callApplyMethod($event);
+
+        $this->playHead = $nextPlayHead;
     }
 
-    /**
-     * @return EventSourcedEntityInterface[]
-     */
-    protected function childEntities(): array
-    {
-        return [];
-    }
-
-    private function handle(DomainEventInterface $event): void
+    private function callApplyMethod(DomainEvent $event): void
     {
         $method = $this->applyMethod($event);
 
@@ -91,10 +75,25 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
         $this->$method($event);
     }
 
-    private function applyMethod(DomainEventInterface $event): string
+    private function applyMethod(DomainEvent $event): string
     {
         $fqcn = explode('\\', $event::class);
 
         return sprintf('apply%s', end($fqcn));
+    }
+
+    private function assertInvalidNextPlayHead(PlayHead $playHead): void
+    {
+        $aggregateNextPlayHead = $this->playHead->next();
+
+        if (!$playHead->equals($aggregateNextPlayHead)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Invalid new PlayHead %d. Expected %d',
+                    $playHead->next()->value,
+                    $aggregateNextPlayHead->value
+                )
+            );
+        }
     }
 }
