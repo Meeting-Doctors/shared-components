@@ -6,6 +6,8 @@ namespace Shared\Domain;
 
 abstract readonly class DomainEvent
 {
+    protected string $type;
+
     public function __construct(
         protected Uuid $aggregateId,
         protected PayloadInterface $payload,
@@ -14,6 +16,7 @@ abstract readonly class DomainEvent
         protected Metadata $metadata,
         protected Uuid $id
     ) {
+        $this->type = strtr(static::class, '\\', '.');
     }
 
     public static function occur(
@@ -57,6 +60,11 @@ abstract readonly class DomainEvent
     public function id(): Uuid
     {
         return $this->id;
+    }
+
+    public function type(): string
+    {
+        return $this->type;
     }
 
     public function aggregateId(): Uuid
