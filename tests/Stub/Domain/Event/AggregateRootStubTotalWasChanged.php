@@ -18,14 +18,13 @@ readonly class AggregateRootStubTotalWasChanged extends DomainEvent
     public function __construct(
         Uuid $aggregateId,
         AggregateRootStubTotalWasChangedV2Payload $payload,
-        PlayHead $playHead = null,
-        DateTimeImmutable $recordedAt = null,
-        Metadata $metadata = null,
+        PlayHead $playHead,
+        DateTimeImmutable $recordedAt,
+        Metadata $metadata,
         ?Uuid $id = null
     ) {
         parent::__construct($aggregateId, $payload, $playHead, $recordedAt, $metadata, $id);
     }
-
 
     public function payload(): AggregateRootStubTotalWasChangedV2Payload
     {

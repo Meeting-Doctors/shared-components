@@ -36,19 +36,12 @@ final class InMemoryEventStore implements EventStoreInterface, EventStoreManager
     }
 
     #[\Override]
-    public function visitEvents(Criteria\AndX|Criteria\OrX $criteria, EventVisitorInterface $eventVisitor): void
+    public function visitEvents(Uuid $aggregateId, EventVisitorInterface $eventVisitor, ?int $playhead = null): void
     {
-        /** @var Criteria\Expr\AndX $andX */
-        $andX = $criteria->expr();
-        /** @var Criteria\Expr\Comparison $expr */
-        $expr = $andX->expressions[0];
-        /** @var Uuid $id */
-        $id = $expr->value;
-        /** @var DomainEvent[] $stream */
-        $stream = $this->data[$id->uuid];
+        $events = $this->data[$aggregateId->uuid];
 
-        foreach ($stream as $message) {
-            $eventVisitor->doWithEvent($message);
+        foreach ($events as $event) {
+            $eventVisitor->doWithEvent($event);
         }
     }
 }

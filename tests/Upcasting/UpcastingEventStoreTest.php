@@ -61,7 +61,7 @@ final class UpcastingEventStoreTest extends TestCase
 
         $events = [];
 
-        $store->visitEvents(new Criteria\AndX(new Criteria\EqId(new Uuid('9db0db88-3e44-4d2b-b46f-9ca547de06ac'))), new CallableEventVisitor(
+        $store->visitEvents(new Uuid('9db0db88-3e44-4d2b-b46f-9ca547de06ac'), new CallableEventVisitor(
             static function (DomainEvent $event) use (&$events): void {
                 $events[] = $event;
             }

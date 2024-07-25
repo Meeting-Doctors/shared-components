@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Shared\EventStore;
 
-use Shared\Criteria;
+use Shared\Domain\Uuid;
 
 interface EventStoreManagerInterface
 {
-    public function visitEvents(Criteria\AndX|Criteria\OrX $criteria, EventVisitorInterface $eventVisitor): void;
+    public function visitEvents(Uuid $aggregateId, EventVisitorInterface $eventVisitor, ?int $playhead = null): void;
 }

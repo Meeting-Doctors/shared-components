@@ -44,8 +44,8 @@ final readonly class UpcastingEventStore implements EventStoreInterface, EventSt
     }
 
     #[\Override]
-    public function visitEvents(Criteria\AndX|Criteria\OrX $criteria, EventVisitorInterface $eventVisitor): void
+    public function visitEvents(Uuid $aggregateId, EventVisitorInterface $eventVisitor, ?int $playhead = null): void
     {
-        $this->eventStore->visitEvents($criteria, $eventVisitor);
+        $this->eventStore->visitEvents($aggregateId, $eventVisitor, $playhead);
     }
 }
