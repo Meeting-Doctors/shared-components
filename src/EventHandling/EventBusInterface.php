@@ -8,8 +8,6 @@ use Shared\Domain\DomainEventStream;
 
 interface EventBusInterface
 {
-    public function subscribe(EventListenerInterface $eventListener): void;
-
     /**
      * @throws EventBusException
      */

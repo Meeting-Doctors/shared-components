@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Shared\Tests\EventStore;
 
-use Shared\Criteria;
-use Shared\Domain\DomainEvent;
 use Shared\Domain\DomainEventStream;
 use Shared\Domain\Uuid;
 use Shared\EventStore\DomainEventStreamNotFoundException;

@@ -6,10 +6,10 @@ namespace Shared\Tests\EventSourcing;
 
 use PHPUnit\Framework\TestCase;
 use Shared\Domain\Uuid;
-use Shared\EventHandling\SimpleEventBus;
 use Shared\EventSourcing\Factory\PublicConstructorAggregateRootFactory;
 use Shared\EventSourcing\MetadataEnricher\MetadataEnrichingEventStreamDecorator;
 use Shared\EventStore\DomainEventStreamNotFoundException;
+use Shared\Tests\EventHandling\InMemoryCollectorEventBus;
 use Shared\Tests\EventStore\InMemoryEventStore;
 use Shared\Tests\Stub\Domain\AggregateRootStub;
 use Shared\Tests\Stub\Infrastructure\Repository\AggregateRootStubRepository;
@@ -22,7 +22,7 @@ final class EventSourcingRepositoryTest extends TestCase
 
         $store = new AggregateRootStubRepository(
             new InMemoryEventStore(),
-            new SimpleEventBus(),
+            new InMemoryCollectorEventBus(),
             new MetadataEnrichingEventStreamDecorator(),
             new PublicConstructorAggregateRootFactory(AggregateRootStub::class)
         );
@@ -38,7 +38,7 @@ final class EventSourcingRepositoryTest extends TestCase
 
         $store = new AggregateRootStubRepository(
             new InMemoryEventStore(),
-            new SimpleEventBus(),
+            new InMemoryCollectorEventBus(),
             new MetadataEnrichingEventStreamDecorator(),
             new PublicConstructorAggregateRootFactory(AggregateRootStub::class)
         );
