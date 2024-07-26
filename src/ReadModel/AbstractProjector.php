@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Shared\ReadModel;
 
 use Shared\Domain\DomainEvent;
-use Shared\EventHandling\EventListenerInterface;
 
-abstract readonly class AbstractProjector implements EventListenerInterface
+abstract readonly class AbstractProjector
 {
-    #[\Override]
     final public function handle(DomainEvent $event): void
     {
         $method = $this->applyMethod($event);

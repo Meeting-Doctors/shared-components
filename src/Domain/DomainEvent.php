@@ -7,12 +7,12 @@ namespace Shared\Domain;
 abstract readonly class DomainEvent
 {
     public function __construct(
-        protected Uuid $aggregateId,
-        protected PayloadInterface $payload,
-        protected PlayHead $playHead,
+        protected Uuid              $aggregateId,
+        protected PayloadInterface  $payload,
+        protected Playhead          $playhead,
         protected DateTimeImmutable $recordedAt,
-        protected Metadata $metadata,
-        protected Uuid $id
+        protected Metadata          $metadata,
+        protected Uuid              $id
     ) {
     }
 
@@ -23,19 +23,19 @@ abstract readonly class DomainEvent
         return new static(
             $aggregateId,
             $payload,
-            PlayHead::zero(),
+            Playhead::zero(),
             DateTimeImmutable::now(),
             Metadata::empty(),
             Uuid::uuid4()
         );
     }
 
-    public function withPlayHead(PlayHead $playHead): self
+    public function withPlayhead(Playhead $playhead): self
     {
         return new static(
             $this->aggregateId,
             $this->payload,
-            $playHead,
+            $playhead,
             $this->recordedAt,
             $this->metadata,
             $this->id,
@@ -47,7 +47,7 @@ abstract readonly class DomainEvent
         return new static(
             $this->aggregateId,
             $this->payload,
-            $this->playHead,
+            $this->playhead,
             $this->recordedAt,
             $this->metadata->merge($metadata),
             $this->id,
@@ -69,9 +69,9 @@ abstract readonly class DomainEvent
         return $this->payload;
     }
 
-    public function playHead(): PlayHead
+    public function playhead(): Playhead
     {
-        return $this->playHead;
+        return $this->playhead;
     }
 
     public function recordedAt(): DateTimeImmutable

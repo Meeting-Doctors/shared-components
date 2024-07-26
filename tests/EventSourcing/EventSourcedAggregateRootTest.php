@@ -28,7 +28,7 @@ final class EventSourcedAggregateRootTest extends TestCase
         self::assertInstanceOf(DomainEvent::class, $event);
         self::assertInstanceOf(AggregateRootStubWasCreatedPayload::class, $payload);
         self::assertSame($aggregateRoot->id(), $event->aggregateId());
-        self::assertSame($aggregateRoot->playHead(), $event->playHead());
+        self::assertSame($aggregateRoot->playhead(), $event->playhead());
     }
 
     public function test_must_apply_specific_event_when_method_not_exists(): void
@@ -49,6 +49,6 @@ final class EventSourcedAggregateRootTest extends TestCase
         self::assertInstanceOf(DomainEvent::class, $event);
         self::assertInstanceOf(AggregateRootStubTotalWasChangedPayload::class, $payload);
         self::assertSame($aggregateRoot->id(), $event->aggregateId());
-        self::assertSame($aggregateRoot->playHead(), $event->playHead());
+        self::assertSame($aggregateRoot->playhead(), $event->playhead());
     }
 }

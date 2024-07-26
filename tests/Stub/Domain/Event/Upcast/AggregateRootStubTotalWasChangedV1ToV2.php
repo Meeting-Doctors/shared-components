@@ -23,7 +23,7 @@ readonly class AggregateRootStubTotalWasChangedV1ToV2 implements UpcasterInterfa
         return new AggregateRootStubTotalWasChanged(
             $event->aggregateId(),
             $newPayload,
-            $event->playHead(),
+            $event->playhead(),
             $event->recordedAt(),
             $event->metadata(),
             $event->id()

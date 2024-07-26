@@ -29,7 +29,7 @@ final class InMemoryEventStore implements EventStoreInterface, EventStoreManager
     public function append(DomainEventStream $stream): void
     {
         foreach ($stream->events as $event) {
-            $this->data[$event->aggregateId()->uuid][$event->playHead()->value] = $event;
+            $this->data[$event->aggregateId()->uuid][$event->playhead()->value] = $event;
         }
     }
 

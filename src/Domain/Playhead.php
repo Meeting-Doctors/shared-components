@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Shared\Domain;
 
-final readonly class PlayHead
+final readonly class Playhead
 {
     public int $value;
 
@@ -18,22 +18,22 @@ final readonly class PlayHead
     private function ensureValueGreaterThanZero(int $value): void
     {
         if ($value < 0) {
-            throw new \InvalidArgumentException('PlayHead value must be greater than 0');
+            throw new \InvalidArgumentException('Playhead value must be greater than 0');
         }
     }
 
-    public static function zero(): PlayHead
+    public static function zero(): Playhead
     {
-        return new PlayHead(0);
+        return new Playhead(0);
     }
 
-    public function next(): PlayHead
+    public function next(): Playhead
     {
-        return new PlayHead($this->value + 1);
+        return new Playhead($this->value + 1);
     }
 
-    public function equals(PlayHead $playHead): bool
+    public function equals(Playhead $playhead): bool
     {
-        return $playHead->value === $this->value;
+        return $playhead->value === $this->value;
     }
 }

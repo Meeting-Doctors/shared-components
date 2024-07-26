@@ -8,18 +8,18 @@ use Override;
 use RuntimeException;
 use Shared\Domain\DomainEvent;
 use Shared\Domain\DomainEventStream;
-use Shared\Domain\PlayHead;
+use Shared\Domain\Playhead;
 
 abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterface
 {
     /** @var DomainEvent[] */
     private array $uncommittedEvents;
-    private PlayHead $playHead;
+    private Playhead $playhead;
 
     public function __construct()
     {
         $this->uncommittedEvents = [];
-        $this->playHead = PlayHead::zero();
+        $this->playhead = Playhead::zero();
     }
 
     final public function initialize(DomainEventStream $stream): void
@@ -29,9 +29,9 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
         }
     }
 
-    final public function playHead(): PlayHead
+    final public function playhead(): Playhead
     {
-        return $this->playHead;
+        return $this->playhead;
     }
 
     #[Override]
@@ -46,7 +46,7 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
 
     protected function recordThat(DomainEvent $event): void
     {
-        $event = $event->withPlayHead($this->playHead->next());
+        $event = $event->withPlayhead($this->playhead->next());
 
         $this->apply($event);
 
@@ -55,13 +55,13 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
 
     private function apply(DomainEvent $event): void
     {
-        $nextPlayHead = $event->playHead();
+        $nextPlayhead = $event->playhead();
 
-        $this->assertInvalidNextPlayHead($nextPlayHead);
+        $this->assertInvalidNextPlayhead($nextPlayhead);
 
         $this->callApplyMethod($event);
 
-        $this->playHead = $nextPlayHead;
+        $this->playhead = $nextPlayhead;
     }
 
     private function callApplyMethod(DomainEvent $event): void
@@ -82,16 +82,16 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
         return sprintf('apply%s', end($fqcn));
     }
 
-    private function assertInvalidNextPlayHead(PlayHead $playHead): void
+    private function assertInvalidNextPlayhead(Playhead $playhead): void
     {
-        $aggregateNextPlayHead = $this->playHead->next();
+        $aggregateNextPlayhead = $this->playhead->next();
 
-        if (!$playHead->equals($aggregateNextPlayHead)) {
+        if (!$playhead->equals($aggregateNextPlayhead)) {
             throw new RuntimeException(
                 sprintf(
-                    'Invalid new PlayHead %d. Expected %d',
-                    $playHead->next()->value,
-                    $aggregateNextPlayHead->value
+                    'Invalid new Playhead %d. Expected %d',
+                    $playhead->next()->value,
+                    $aggregateNextPlayhead->value
                 )
             );
         }
