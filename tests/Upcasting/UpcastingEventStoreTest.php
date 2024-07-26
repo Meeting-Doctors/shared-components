@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Shared\Tests\Upcasting;
 
 use PHPUnit\Framework\TestCase;
-use Shared\Criteria;
 use Shared\Domain\DomainEvent;
 use Shared\Domain\DomainEventStream;
 use Shared\Domain\Uuid;

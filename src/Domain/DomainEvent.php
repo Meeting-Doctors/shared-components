@@ -6,13 +6,13 @@ namespace Shared\Domain;
 
 abstract readonly class DomainEvent
 {
-    public function __construct(
-        protected Uuid              $aggregateId,
-        protected PayloadInterface  $payload,
-        protected Playhead          $playhead,
+    final public function __construct(
+        protected Uuid $aggregateId,
+        protected PayloadInterface $payload,
+        protected Playhead $playhead,
         protected DateTimeImmutable $recordedAt,
-        protected Metadata          $metadata,
-        protected Uuid              $id
+        protected Metadata $metadata,
+        protected Uuid $id
     ) {
     }
 

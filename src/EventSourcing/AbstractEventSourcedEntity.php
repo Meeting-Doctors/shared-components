@@ -15,7 +15,7 @@ abstract class AbstractEventSourcedEntity implements EventSourcedEntityInterface
      */
     final protected function apply(DomainEvent $event): void
     {
-        //$this->aggregateRoot->apply($event);
+        // $this->aggregateRoot->apply($event);
     }
 
     /**

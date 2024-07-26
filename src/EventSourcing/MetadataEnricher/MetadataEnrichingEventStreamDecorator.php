@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Shared\EventSourcing\MetadataEnricher;
 
-use Shared\Domain\DomainEventStream;
 use Shared\Domain\DomainEvent;
+use Shared\Domain\DomainEventStream;
 use Shared\Domain\Metadata;
 use Shared\EventSourcing\EventStreamDecoratorInterface;
 

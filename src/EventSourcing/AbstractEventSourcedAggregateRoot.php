@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Shared\EventSourcing;
 
-use Override;
-use RuntimeException;
 use Shared\Domain\DomainEvent;
 use Shared\Domain\DomainEventStream;
 use Shared\Domain\Playhead;
@@ -34,7 +32,7 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
         return $this->playhead;
     }
 
-    #[Override]
+    #[\Override]
     final public function uncommittedEvents(): DomainEventStream
     {
         $stream = new DomainEventStream(...$this->uncommittedEvents);
@@ -87,13 +85,7 @@ abstract class AbstractEventSourcedAggregateRoot implements AggregateRootInterfa
         $aggregateNextPlayhead = $this->playhead->next();
 
         if (!$playhead->equals($aggregateNextPlayhead)) {
-            throw new RuntimeException(
-                sprintf(
-                    'Invalid new Playhead %d. Expected %d',
-                    $playhead->next()->value,
-                    $aggregateNextPlayhead->value
-                )
-            );
+            throw new \RuntimeException(sprintf('Invalid new Playhead %d. Expected %d', $playhead->next()->value, $aggregateNextPlayhead->value));
         }
     }
 }

@@ -32,18 +32,18 @@ final class EventSourcedEntityTest extends TestCase
         self::assertInstanceOf(AggregateRootStubTotalWasChangedV2Payload::class, $payload);
         self::assertSame($aggregateRoot->id(), $event->aggregateId());
         self::assertSame($aggregateRoot->playhead(), $event->playhead());
-/*
-        $aggregateRoot->bazAttachment(new Uuid('c467bd14-4265-41f5-9101-5df03595e2a6'));
+        /*
+                $aggregateRoot->bazAttachment(new Uuid('c467bd14-4265-41f5-9101-5df03595e2a6'));
 
-        $stream = $aggregateRoot->uncommittedEvents();
-        $events = $stream->events;
-        $event = $events[0];
-        $payload = $event->payload;
+                $stream = $aggregateRoot->uncommittedEvents();
+                $events = $stream->events;
+                $event = $events[0];
+                $payload = $event->payload;
 
-        self::assertInstanceOf(DomainEvent::class, $event);
-        self::assertInstanceOf(AnAggregatedEntityWasBazed::class, $payload);
-        self::assertSame($aggregateRoot->id(), $event->id);
-        self::assertSame($aggregateRoot->playhead(), $event->playhead);
-*/
+                self::assertInstanceOf(DomainEvent::class, $event);
+                self::assertInstanceOf(AnAggregatedEntityWasBazed::class, $payload);
+                self::assertSame($aggregateRoot->id(), $event->id);
+                self::assertSame($aggregateRoot->playhead(), $event->playhead);
+        */
     }
 }

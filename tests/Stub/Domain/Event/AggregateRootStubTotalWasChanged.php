@@ -1,31 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Shared\Tests\Stub\Domain\Event;
 
-use Shared\Domain\DateTimeImmutable;
 use Shared\Domain\DomainEvent;
-use Shared\Domain\Metadata;
 use Shared\Domain\PayloadInterface;
-use Shared\Domain\Playhead;
-use Shared\Domain\Uuid;
 use Shared\Tests\Stub\Domain\Event\Payload\AggregateRootStubTotalWasChangedV2Payload;
 
 readonly class AggregateRootStubTotalWasChanged extends DomainEvent
 {
-    public AggregateRootStubTotalWasChangedV2Payload|PayloadInterface $payload;
-
-    public function __construct(
-        Uuid                                      $aggregateId,
-        AggregateRootStubTotalWasChangedV2Payload $payload,
-        Playhead                                  $playhead,
-        DateTimeImmutable                         $recordedAt,
-        Metadata                                  $metadata,
-        ?Uuid                                     $id = null
-    ) {
-        parent::__construct($aggregateId, $payload, $playhead, $recordedAt, $metadata, $id);
-    }
-
-    public function payload(): AggregateRootStubTotalWasChangedV2Payload
+    public function payload(): AggregateRootStubTotalWasChangedV2Payload|PayloadInterface
     {
         return $this->payload;
     }

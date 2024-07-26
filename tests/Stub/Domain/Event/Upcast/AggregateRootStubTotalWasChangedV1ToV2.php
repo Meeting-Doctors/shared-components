@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Shared\Tests\Stub\Domain\Event\Upcast;
 
 use Shared\Domain\DomainEvent;
-use Shared\Domain\Uuid;
 use Shared\Tests\Stub\Domain\Event\AggregateRootStubTotalWasChanged;
 use Shared\Tests\Stub\Domain\Event\Payload\AggregateRootStubTotalWasChangedPayload;
 use Shared\Tests\Stub\Domain\Event\Payload\AggregateRootStubTotalWasChangedV2Payload;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Shared\Tests\Stub\Domain;
 
 use Shared\Domain\Uuid;
