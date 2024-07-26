@@ -8,11 +8,12 @@ use Shared\Domain\Uuid;
 
 final class ReadModelNotFoundException extends \RuntimeException
 {
-    public static function new(Uuid $id): self
+    public static function new(Uuid $id, string $class): self
     {
         return new self(
             sprintf(
-                'ReadModel with id "%s" could not be found',
+                'ReadModel %s with id "%s" could not be found',
+                $class,
                 $id->uuid
             )
         );
