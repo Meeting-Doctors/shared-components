@@ -11,7 +11,7 @@ CQRS and event sourced applications.
 ## Installation
 
 ```
-$ composer require gilsegura/shared
+$ composer require meetingdoctors/shared-components
 ```
 
 ## License
