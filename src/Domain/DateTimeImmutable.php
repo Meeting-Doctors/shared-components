@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Shared\Domain;
 
-use Assert\Assertion;
-
 use DateTimeImmutable as NativeDateTimeImmutable;
 use InvalidArgumentException;
 
@@ -60,10 +58,5 @@ final readonly class DateTimeImmutable
     public function equals(DateTimeImmutable $dateTime): bool
     {
         return $this->timestamp() === $dateTime->timestamp();
-    }
-
-    public function gt(DateTimeImmutable $dateTime): bool
-    {
-        return $this->timestamp > $dateTime->timestamp;
     }
 }
