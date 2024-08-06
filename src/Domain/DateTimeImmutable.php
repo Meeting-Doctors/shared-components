@@ -30,7 +30,7 @@ final readonly class DateTimeImmutable
         return new self($date->format(self::DATE_FORMAT));
     }
 
-    public static function fromFormat(string $format, $datetime): self
+    public static function fromFormat(string $format, string $datetime): self
     {
         $date = NativeDateTimeImmutable::createFromFormat($format, $datetime, new DateTimeZone('UTC'));
 
