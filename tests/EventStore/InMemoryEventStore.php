@@ -8,10 +8,8 @@ use Shared\Domain\DomainEventStream;
 use Shared\Domain\Uuid;
 use Shared\EventStore\DomainEventStreamNotFoundException;
 use Shared\EventStore\EventStoreInterface;
-use Shared\EventStore\EventStoreManagerInterface;
-use Shared\EventStore\EventVisitorInterface;
 
-final class InMemoryEventStore implements EventStoreInterface, EventStoreManagerInterface
+final class InMemoryEventStore implements EventStoreInterface
 {
     private array $data = [];
 
@@ -30,16 +28,6 @@ final class InMemoryEventStore implements EventStoreInterface, EventStoreManager
     {
         foreach ($stream->events as $event) {
             $this->data[$event->aggregateId()->uuid][$event->playhead()->value] = $event;
-        }
-    }
-
-    #[\Override]
-    public function visitEvents(Uuid $aggregateId, EventVisitorInterface $eventVisitor, ?int $playhead = null): void
-    {
-        $events = $this->data[$aggregateId->uuid];
-
-        foreach ($events as $event) {
-            $eventVisitor->doWithEvent($event);
         }
     }
 }

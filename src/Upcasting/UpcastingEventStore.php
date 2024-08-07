@@ -7,13 +7,11 @@ namespace Shared\Upcasting;
 use Shared\Domain\DomainEventStream;
 use Shared\Domain\Uuid;
 use Shared\EventStore\EventStoreInterface;
-use Shared\EventStore\EventStoreManagerInterface;
-use Shared\EventStore\EventVisitorInterface;
 
-final readonly class UpcastingEventStore implements EventStoreInterface, EventStoreManagerInterface
+final readonly class UpcastingEventStore implements EventStoreInterface
 {
     public function __construct(
-        private EventStoreInterface&EventStoreManagerInterface $eventStore,
+        private EventStoreInterface $eventStore,
         private UpcasterInterface $upcaster
     ) {
     }
@@ -27,6 +25,12 @@ final readonly class UpcastingEventStore implements EventStoreInterface, EventSt
         return new DomainEventStream(...$messages);
     }
 
+    #[\Override]
+    public function append(DomainEventStream $stream): void
+    {
+        $this->eventStore->append($stream);
+    }
+
     private function upcast(DomainEventStream $stream): \Generator
     {
         foreach ($stream->events as $event) {
@@ -34,17 +38,5 @@ final readonly class UpcastingEventStore implements EventStoreInterface, EventSt
                 yield $this->upcaster->upcast($event);
             }
         }
-    }
-
-    #[\Override]
-    public function append(DomainEventStream $stream): void
-    {
-        $this->eventStore->append($stream);
-    }
-
-    #[\Override]
-    public function visitEvents(Uuid $aggregateId, EventVisitorInterface $eventVisitor, ?int $playhead = null): void
-    {
-        $this->eventStore->visitEvents($aggregateId, $eventVisitor, $playhead);
     }
 }
